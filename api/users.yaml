@@ -1,0 +1,131 @@
+openapi: "3.0.3"
+info:
+  title: Users API
+  description: This is a REST definition for User functionalities.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1/
+
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get users list
+      description: Get users list
+      operationId: usersList
+      parameters:
+        - $ref: "#/components/parameters/userType"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+              examples:
+                Empty State:
+                  value:
+                    [ ]
+                Standard Users:
+                  value:
+                    - id: "1"
+                      firstName: "John"
+                      lastName: "Doe"
+                      age: 32
+                      accountBalance: 6437.21
+                    - id: "2"
+                      firstName: "Judith"
+                      lastName: "Simpson"
+                      age: 19
+                      accountBalance: 687.09
+                Special Users:
+                  value:
+                    - id: "3"
+                      firstName: "Joe"
+                      lastName: "Biden"
+                      age: 80
+                      accountBalance: 564629.56
+                    - id: "4"
+                      firstName: "Laura"
+                      lastName: "Bush"
+                      age: 76
+                      accountBalance: 657334.98
+    post:
+      tags:
+        - users
+      summary: Create user
+      description: Creates new user with given type
+      operationId: createUser
+      requestBody:
+        description: "Create user body"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              example:
+                - id: "5"
+                  firstName: "Mark"
+                  lastName: "Spencer"
+                  age: 40
+                  accountBalance: 23905.32
+
+components:
+  parameters:
+    userType:
+      name: userType
+      in: query
+      description: user type
+      required: true
+      schema:
+        $ref: "#/components/schemas/UserType"
+  schemas:
+    UserType:
+      type: string
+      description: User type
+      enum:
+        - STANDARD
+        - SPECIAL
+    UserList:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        age:
+          type: integer
+          format: int32
+          default: null
+        accountBalance:
+          type: number
+      required:
+        - id
+        - firstName
+        - lastName
+        - age
+    CreateUserRequest:
+      type: object
+      properties:
+        userType:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - userType
+        - user
+
